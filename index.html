@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#191b14">
+<meta name="description" content="Ночная смена в Архиве №13: измельчай бумаги и технику, управляй нагревом, улучшай шредер и закрой десять нарядов.">
+<link rel="preload" as="image" href="assets/archive-night.png"><link rel="preload" as="image" href="assets/shredder-body.png"><link rel="preload" as="image" href="assets/evidence-atlas.png">
+<title>Архив №13 — ночная смена</title><link rel="stylesheet" href="assets/fonts/faces.css"><link rel="stylesheet" href="style.css">
+<script defer src="model.js"></script><script defer src="feel.js"></script><script defer src="art.js"></script><script defer src="interface.js"></script><script defer src="yandex.js"></script><script defer src="platform.js"></script><script defer src="persistence.js"></script><script defer src="game.js"></script>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"><meta property="og:title" content="Архив №13"><meta property="og:description" content="Бумаги, техника и десять ночных нарядов."></head>
+<body>
+<div id="boot-screen" class="boot-screen" role="status"><b>Архив №13</b><span>Открываем архив…</span></div>
+<div class="shell" inert>
+<header class="room-header">
+<h1 class="brand"><span class="brand-seal" aria-hidden="true">13</span><span>Архив №13<small>Бюро бумажных дел</small></span></h1>
+<div class="shift-line"><span id="shift-caption">Ночная смена</span> <b id="night">01</b><span id="campaign-count"> / 10</span></div>
+<div class="header-tools"><button id="journal-trigger" class="book-trigger" aria-expanded="false" aria-controls="journal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h15v18H4zM7 3v18M10 7h6M10 10h6"/></svg>Журнал</button><button id="sound" class="quiet-button" aria-label="Включить звук" aria-pressed="false">Звук</button><button id="pause" class="quiet-button" aria-label="Пауза">Пауза</button></div>
+</header>
+<main class="workplace">
+<section class="workspace" aria-label="Рабочее место архивариуса">
+<div class="notice-slot"><div id="toast" class="toast" role="status" aria-atomic="true"><strong id="toast-title">Подача вручную</strong><span id="toast-message">Возьми предмет и потяни вниз. Каждый следующий — новым захватом.</span></div></div>
+<div class="desk">
+<canvas tabindex="-1" id="scene" width="900" height="620" aria-label="Предмет и шредер. Тяните предмет вниз для подачи. Нажмите на корзину, чтобы сменить мешок."></canvas><div class="machine-caption"><span id="machine-state">Машина готова</span><span><b id="heat">0°</b> · <span id="bin-label">0 / 8</span></span></div>
+<section class="cash-meter" aria-label="Заработок"><span>Касса списания</span><div><b id="cash">0</b><i>₽</i></div><small>НАЧИСЛЕНО ЗА СМЕНУ</small></section>
+<div class="clock"><small>НОЧНАЯ СМЕНА</small><span id="clock">00:00</span><small id="boost-status">Обычная оплата</small></div>
+<section class="quota-slip" aria-label="Наряд ночной смены"><div class="paper-clip" aria-hidden="true"></div><h2>Наряд на смену</h2><div class="slip-rule"></div><p>Всего списано</p><b id="count">0 / 40</b><div class="track"><div id="quota-bar"></div></div><p id="quota-text">Партия по наряду</p><small id="contract-grade">Счёт-фактура: 0 / 8</small><span id="plan-stamp" class="plan-stamp">В РАБОТЕ</span><button id="close-case" class="paper-claim" disabled>Выполнить наряд</button><small>Задания дня — в журнале</small></section>
+<button id="plane" class="plane-button" aria-label="Поймать бумажный самолётик" hidden><svg viewBox="0 0 64 48" aria-hidden="true"><path fill="#e7dfc3" d="M2 3 61 19 17 27z"/><path fill="#a99e7c" d="M17 27 21 44 31 28 61 19z"/><path fill="#faf0cf" d="M2 3 31 28 61 19z"/></svg><span class="plane-label">Поймать</span></button>
+
+<div class="item-line"><span id="item-name">Стикер</span><span id="item-bonus">6 ₽</span><span id="streak">Серия 0</span></div>
+</div>
+<div class="desk-accessories"><button id="intern-toggle" class="timecard" disabled aria-pressed="false"><svg viewBox="0 0 28 32" aria-hidden="true"><path d="M3 2h22v28H3zM10 2v3h8V2M7 23h14M7 26h8"/><circle cx="14" cy="12" r="3"/><path d="M8 20c0-7 12-7 12 0"/></svg><span><b>Стажёр не нанят</b><small>Найм — в журнале заявок</small></span></button>
+<button id="next-case" class="next-case" aria-label="Открыть заявку на следующее дело"><span class="next-case-icon" aria-hidden="true"></span><span class="next-case-copy"><small>Следующее дело</small><b></b><span class="next-case-detail"></span><span class="next-case-price"></span><span class="next-case-track" aria-hidden="true"><i></i></span></span><span class="next-case-arrow" aria-hidden="true">↗</span></button></div>
+<div class="shift-modifier"><span id="modifier">Штатная смена</span><span id="night-pay">Оплата ×1</span></div>
+</section>
+<aside id="journal" class="journal" aria-label="Журнал архивариуса">
+<div class="journal-paper">
+<button id="journal-close" class="journal-close" aria-label="Закрыть журнал"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+<nav class="index-tabs" role="tablist" aria-label="Разделы журнала"><button id="tab-equipment" role="tab" aria-selected="true" aria-controls="equipment-panel">Заявки</button><button id="collection-toggle" role="tab" aria-selected="false" aria-controls="inventory-panel" tabindex="-1">Опись</button><button id="daily-tab" role="tab" aria-selected="false" aria-controls="daily-panel" tabindex="-1">Задания</button><button id="awards" role="tab" aria-selected="false" aria-controls="award-panel" tabindex="-1">Награды</button></nav>
+<div class="journal-heading"><h2 id="journal-title">Журнал заявок</h2><p id="journal-subtitle">Оборудование для ночной смены</p></div>
+<section id="equipment-panel" class="journal-panel" role="tabpanel" aria-labelledby="tab-equipment"><div class="ledger-columns"><span>Наименование / назначение</span><span>К оплате</span></div><div id="upgrade-list"></div><div id="boost-list" hidden><p class="paper-note">Доплата равна заработку предмета, но не выше ставки дела при покупке. На следующих делах сумма доплаты ограничена. Одновременно действует один пропуск.</p><button id="boost-espresso" class="boost-order"><b>Двойной эспрессо</b><small>Доплата за предмет · 2 минуты</small><span></span></button><button id="ad-espresso" class="boost-order ad-offer" hidden><b>Эспрессо за просмотр</b><small>Реклама · доплата на 2 минуты. Общее ожидание с платным эспрессо — 10 минут.</small><span>Смотреть рекламу</span></button><button id="boost-overtime" class="boost-order"><b>Сверхурочная смена</b><small>Доплата за предмет · 15 минут</small><span></span></button></div><nav class="ledger-pager" aria-label="Страницы заявок"><button id="page-prev" disabled>Назад</button><span id="journal-page">Лист 1 из 3</span><button id="page-next">Далее</button></nav></section>
+<section id="inventory-panel" class="journal-panel" role="tabpanel" aria-labelledby="collection-toggle" hidden><p id="collection-count" class="inventory-note">Выдано 1 из 11 дел</p><div id="collection" class="collection"></div><p class="paper-note">Новое дело открывает более дорогие предметы.</p></section>
+<section id="daily-panel" class="journal-panel daily-panel" role="tabpanel" aria-labelledby="daily-tab" hidden><p id="daily-summary" class="paper-note">Выполнено 0 из 3</p><p class="paper-note">Награда закреплена при выдаче записки. Новые задания — завтра.</p><div id="daily-list"></div></section><section id="award-panel" class="journal-panel award-panel" role="tabpanel" aria-labelledby="awards" hidden><p id="award-summary" class="paper-note"></p><div id="award-entries"></div></section>
+<div class="journal-footer"><div class="available-funds"><span>Доступно в кассе</span><b id="journal-funds">0 ₽</b></div><small id="pay-bonus">Награды: +0% к оплате</small></div>
+</div>
+</aside>
+</main>
+<footer><span>Архив №13</span><span id="save-status" role="status">Сохранение на этом устройстве</span><button id="sync-reload" class="quiet-button" hidden>Загрузить актуальную смену</button><span>Тяни предмет · нажми на корзину</span></footer>
+</div>
+<button id="journal-scrim" class="journal-scrim" hidden aria-label="Закрыть журнал"></button>
+<div id="overlay" class="overlay" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><h2 id="modal-title">Тишина в архиве.</h2><p id="modal-text">Смена на паузе.</p><span id="modal-eyebrow" hidden></span><div id="modal-details"></div><button id="resume" class="resume-button">Продолжить</button><div id="save-tools" class="save-tools" hidden><button id="new-game">Начать с нуля</button><button id="restore-game" hidden>Восстановить прошлую игру</button></div></section></div>
+</body>
+</html>
