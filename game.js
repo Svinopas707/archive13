@@ -144,19 +144,19 @@
   function emptyBin() {
     if (adBusy || paused || ui.suspended || model.ended) return;
     if (!model.empty()) { toast('Корзина уже пуста. За работу!'); return; }
-    notices.clear('full');art.onEvent('empty',model); particles = []; toast(`Вторсырьё принято: +${model.recycleReward.toLocaleString('ru-RU')} ₽`); crunch(true); showAwards(); persist(); updateUI();
+    notices.clear('full');art.onEvent('empty',model); particles = []; toast(`Вторсырьё принято: +${model.recycleReward.toLocaleString('ru-RU')} жет.`); crunch(true); showAwards(); persist(); updateUI();
   }
   function catchPlane() {
     if (adBusy || paused) return;
     notices.clear('plane');const reward = model.catchPlane();
-    if (reward) { toast(`Авиапочта: +${reward.toLocaleString('ru-RU')} ₽ и −12° нагрева`); beep(880,.15); showAwards(); persist(); updateUI(); }
+    if (reward) { toast(`Авиапочта: +${reward.toLocaleString('ru-RU')} жет. и −12° нагрева`); beep(880,.15); showAwards(); persist(); updateUI(); }
   }
   $('plane').addEventListener('click', catchPlane);
   $('intern-toggle').addEventListener('click', () => {
     if (adBusy || paused || !model.levels.intern) return;
     model.internEnabled = !model.internEnabled; persist(); updateUI();
   });
-  document.querySelectorAll('[data-daily]').forEach(button=>button.addEventListener('click',()=>{if(adBusy||paused)return;const reward=model.claimDaily(localDate(),button.dataset.daily);if(reward){toast(`Задание принято: +${reward.toLocaleString('ru-RU')} ₽`,5);persist();updateUI();}}));
+  document.querySelectorAll('[data-daily]').forEach(button=>button.addEventListener('click',()=>{if(adBusy||paused)return;const reward=model.claimDaily(localDate(),button.dataset.daily);if(reward){toast(`Задание принято: +${reward.toLocaleString('ru-RU')} жет.`,5);persist();updateUI();}}));
   for(const kind of Object.keys(ArchiveModel.BOOSTS))$('boost-'+kind).addEventListener('click',()=>{if(adBusy||paused)return;if(model.activateBoost(kind)){toast(`${ArchiveModel.BOOSTS[kind].name}: доплата включена`,5);persist();updateUI();}});
   $('close-case').addEventListener('click',()=>{if(!adBusy&&!paused&&model.closeCase())endShift();});
   document.addEventListener('keydown', e => {
@@ -215,7 +215,7 @@
   document.addEventListener('visibilitychange', () => {
     if(adBusy){hiddenAt=0;release();audioTick();return;}
     if (document.hidden) { hiddenAt = Date.now(); if (started && !model.ended && !paused) setPause(true); release(); persist(); audioTick(); }
-    else if (hiddenAt) { const report = model.advanceOffline((Date.now() - hiddenAt) / 1000); hiddenAt = 0; if (report.items) toast(`Стажёр списал ${report.items} предметов: +${report.cash.toLocaleString('ru-RU')} ₽`,8); persist(); updateUI(); }
+    else if (hiddenAt) { const report = model.advanceOffline((Date.now() - hiddenAt) / 1000); hiddenAt = 0; if (report.items) toast(`Стажёр списал ${report.items} предметов: +${report.cash.toLocaleString('ru-RU')} жет.`,8); persist(); updateUI(); }
   });
   window.addEventListener('blur', () => { if(adBusy)return;release(); if (started && !model.ended && !paused) setPause(true); });
   window.addEventListener('pagehide',()=>{persist();platform.persistHistory();if(!saveTransition)void store.flush();});
@@ -226,7 +226,7 @@
       if(kind==='tier'||firstHire){
         if(ui.compact)ui.setOpen(false,true);paused=true;release();modalMode='reveal';
         const item=ITEMS[model.levels.tier];
-        openModal('ЗАЯВКА ОДОБРЕНА',firstHire?'Стажёр принят на смену.':`Выдано новое дело: ${item.name}`,firstHire?'Ты нанял стажёра через журнал заявок. Он сам подаёт предметы, делает перерыв для охлаждения и зарабатывает в отсутствие до 8 часов. На полной корзине остановится, если не установлен автомат мешков. Отключить его можно по табелю под столом.':`Базовая оплата: ${item.value.toLocaleString('ru-RU')} ₽ — в ${(item.value/ITEMS[Math.max(0,item.id-1)].value).toLocaleString('ru-RU',{maximumFractionDigits:1})} раза выше предыдущего дела. Текущий предмет остаётся в работе; новое дело поступит после его уничтожения.`,firstHire?'К РАБОТЕ':'ПРИНЯТЬ ДЕЛО');
+        openModal('ЗАЯВКА ОДОБРЕНА',firstHire?'Стажёр принят на смену.':`Выдано новое дело: ${item.name}`,firstHire?'Ты нанял стажёра через журнал заявок. Он сам подаёт предметы, делает перерыв для охлаждения и зарабатывает в отсутствие до 8 часов. На полной корзине остановится, если не установлен автомат мешков. Отключить его можно по табелю под столом.':`Базовая оплата: ${item.value.toLocaleString('ru-RU')} жет. — в ${(item.value/ITEMS[Math.max(0,item.id-1)].value).toLocaleString('ru-RU',{maximumFractionDigits:1})} раза выше предыдущего дела. Текущий предмет остаётся в работе; новое дело поступит после его уничтожения.`,firstHire?'К РАБОТЕ':'ПРИНЯТЬ ДЕЛО');
         if(!firstHire)$('modal-details').innerHTML=`<div class="case-reveal">${art.evidenceIcon(item.id)}</div>`;
         audioTick();
       }else toast('Заявка одобрена. Оборудование установлено.');
@@ -241,16 +241,16 @@
     document.body.classList.toggle('motor-running',s.lastPressure>0);
     document.body.classList.toggle('motor-hot',s.heat>75);
     canvas.closest('.desk').dataset.heat=ArchiveFeel.heatBand(s.heat,s.jammed);
-    $('night').textContent = String(s.night).padStart(2, '0');$('shift-caption').textContent=s.night>10?'Дополнительная смена':'Ночная смена';$('campaign-count').hidden=s.night>10; $('cash').textContent=s.cash>=1e6?`${(s.cash/1e6).toLocaleString('ru-RU',{maximumFractionDigits:2})} млн`:Math.floor(s.cash).toLocaleString('ru-RU');$('cash').title=`${Math.floor(s.cash).toLocaleString('ru-RU')} ₽`;
+    $('night').textContent = String(s.night).padStart(2, '0');$('shift-caption').textContent=s.night>10?'Дополнительная смена':'Ночная смена';$('campaign-count').hidden=s.night>10; $('cash').textContent=s.cash>=1e6?`${(s.cash/1e6).toLocaleString('ru-RU',{maximumFractionDigits:2})} млн`:Math.floor(s.cash).toLocaleString('ru-RU');$('cash').title=`${Math.floor(s.cash).toLocaleString('ru-RU')} жет.`;
     model.ensureDaily(localDate());
     const tasks=ArchiveModel.DAILY_TASKS;
     $('daily-summary').textContent=`Выполнено ${s.daily.claimed.length} из ${tasks.length}`;
-    for(const task of tasks){const done=s.daily.claimed.includes(task.id),progress=s.dailyProgress(task.id),button=document.querySelector(`[data-daily="${task.id}"]`);$('daily-progress-'+task.id).textContent=`${progress} / ${task.need} · премия ${s.dailyReward(task.id).toLocaleString('ru-RU')} ₽`;button.disabled=done||progress<task.need;button.textContent=done?'Принято':progress>=task.need?'Получить премию':'В работе';const ad=document.querySelector(`[data-daily-ad="${task.id}"]`);ad.hidden=done||progress<task.need||!platform.available.rewarded;ad.textContent=`Реклама · ${(s.dailyReward(task.id)*2).toLocaleString('ru-RU')} ₽ (×2)`;}
+    for(const task of tasks){const done=s.daily.claimed.includes(task.id),progress=s.dailyProgress(task.id),button=document.querySelector(`[data-daily="${task.id}"]`);$('daily-progress-'+task.id).textContent=`${progress} / ${task.need} · премия ${s.dailyReward(task.id).toLocaleString('ru-RU')} жет.`;button.disabled=done||progress<task.need;button.textContent=done?'Принято':progress>=task.need?'Получить премию':'В работе';const ad=document.querySelector(`[data-daily-ad="${task.id}"]`);ad.hidden=done||progress<task.need||!platform.available.rewarded;ad.textContent=`Реклама · ${(s.dailyReward(task.id)*2).toLocaleString('ru-RU')} жет. (×2)`;}
     const next=ITEMS[s.levels.tier+1],goal=$('next-case');
     const details=['','Длиннее лист · оплата ×2','Первое дело по наряду','Ценная бумага с высокой ставкой','Плотная папка · больше сопротивление','Первый пластик · осколки вместо полос','Тонкий пластик · быстрая подача','Корпус и плата · сухой треск','Металл · тяжёлые осколки','Крупный корпус · высокая ставка','Последнее дело · тяжёлая металлическая подача'];
     if(goalTier!==s.levels.tier){goalTier=s.levels.tier;goal.querySelector('.next-case-icon').innerHTML=art.evidenceIcon(next?next.id:s.levels.tier);goal.querySelector('b').textContent=next?next.name:'Опись полностью открыта';goal.querySelector('.next-case-detail').textContent=next?details[next.id]:'Итоговая проверка — после десяти закрытых нарядов';}
     goal.disabled=!next;goal.classList.toggle('ready',!!next&&s.cash>=s.cost('tier'));
-    goal.querySelector('.next-case-price').textContent=next?(s.cash>=s.cost('tier')?`Можно получить · ${s.cost('tier').toLocaleString('ru-RU')} ₽`:`Осталось ${Math.ceil(s.cost('tier')-s.cash).toLocaleString('ru-RU')} ₽ · ставка ${Math.round(next.value*s.nightPay).toLocaleString('ru-RU')} ₽`):`${Math.min(10,s.night-1)} / 10 нарядов сдано · ${s.contract.qualified} / ${s.contract.required} по классу`;
+    goal.querySelector('.next-case-price').textContent=next?(s.cash>=s.cost('tier')?`Можно получить · ${s.cost('tier').toLocaleString('ru-RU')} жет.`:`Осталось ${Math.ceil(s.cost('tier')-s.cash).toLocaleString('ru-RU')} жет. · ставка ${Math.round(next.value*s.nightPay).toLocaleString('ru-RU')} жет.`):`${Math.min(10,s.night-1)} / 10 нарядов сдано · ${s.contract.qualified} / ${s.contract.required} по классу`;
     goal.querySelector('i').style.width=next?`${Math.min(100,s.cash/s.cost('tier')*100)}%`:'100%';
     $('count').textContent=`${s.count} / ${s.contract.target}`;
     $('quota-bar').style.width=`${Math.min(100,s.count/s.contract.target*100)}%`;
@@ -260,7 +260,7 @@
     $('modifier').textContent = `${s.modifier.name} · ${s.modifier.desc}`;
     $('night-pay').textContent = `ОПЛАТА ×${s.nightPay.toLocaleString('ru-RU')}`;
     $('item-name').textContent = s.item.name;
-    $('item-bonus').textContent = `${Math.round(s.item.value * s.nightPay).toLocaleString('ru-RU')} ₽${s.secret ? ' · СЕКРЕТНО +100%' : ''}${s.urgent > 0 ? ` · СРОЧНО ${Math.ceil(s.urgent)}с +50%` : ''}`;
+    $('item-bonus').textContent = `${Math.round(s.item.value * s.nightPay).toLocaleString('ru-RU')} жет.${s.secret ? ' · СЕКРЕТНО +100%' : ''}${s.urgent > 0 ? ` · СРОЧНО ${Math.ceil(s.urgent)}с +50%` : ''}`;
     document.querySelector('.item-line').classList.toggle('hot', s.secret || s.urgent > 0);
     $('streak').textContent = `СЕРИЯ ${s.streak}${s.streak > 1 ? ` · +${Math.min(10,s.streak-1)*5}%` : ''}`;
     $('awards').textContent = `Награды · ${s.awards.size}`;
@@ -273,7 +273,7 @@
     intern.querySelector('small').textContent=s.levels.intern?`Нанят в журнале · ур. ${s.levels.intern} · нажми для ${s.internEnabled?'отдыха':'работы'}`:'Сначала одобри найм в журнале заявок';
     if (collectionLevel !== s.levels.tier) {
       collectionLevel = s.levels.tier; $('collection-count').textContent = `Выдано ${collectionLevel + 1} из ${ITEMS.length} дел`;
-      $('collection').innerHTML = ITEMS.map(item => `<div class="case-item ${item.id > collectionLevel ? 'locked' : ''}"><b>${art.evidenceIcon(item.id)}</b><span>${item.name}</span><small>${item.id > collectionLevel ? 'ЗАКРЫТО' : `${item.value.toLocaleString('ru-RU')} ₽ × НОЧЬ`}</small></div>`).join('');
+      $('collection').innerHTML = ITEMS.map(item => `<div class="case-item ${item.id > collectionLevel ? 'locked' : ''}"><b>${art.evidenceIcon(item.id)}</b><span>${item.name}</span><small>${item.id > collectionLevel ? 'ЗАКРЫТО' : `${item.value.toLocaleString('ru-RU')} жет. × НОЧЬ`}</small></div>`).join('');
     }
     $('heat').textContent = `${Math.round(s.heat)}°`; $('heat').style.color = s.heat >= 75 ? 'var(--red)' : 'var(--ink)';
     const worked=Math.floor(s.elapsed);$('clock').textContent=`${String(Math.floor(worked/60)).padStart(2,'0')}:${String(worked%60).padStart(2,'0')}`;
@@ -281,7 +281,7 @@
     $('ad-espresso').hidden=!platform.available.rewarded||s.levels.tier<2;$('ad-espresso').disabled=!s.canRewardedEspresso();
     $('ad-espresso').querySelector('span').textContent=s.boosts.espresso.cooldown>0?`Снова через ${format(s.boosts.espresso.cooldown)}`:s.boostMultiplier>1?'Уже действует другой пропуск':'Смотреть рекламу';
     $('boost-status').textContent=active?`Доплата · ${format(active[1].left)}`:'Обычная оплата';
-    for(const [kind,def]of Object.entries(ArchiveModel.BOOSTS)){const button=$('boost-'+kind),state=s.boosts[kind],cost=s.boostCost(kind);button.querySelector('small').textContent=`До ${Math.round((state.left>0?state.unit:ITEMS[s.levels.tier].value*s.nightPay)*4).toLocaleString('ru-RU')} ₽ доплаты за предмет · ${kind==='espresso'?'2':'15'} мин`;button.disabled=paused||state.cooldown>0||s.boostMultiplier>1||s.cash<cost;button.querySelector('span').textContent=state.left>0?`Действует · ${format(state.left)}`:state.cooldown>0?`Снова через ${format(state.cooldown)}`:s.boostMultiplier>1?'Уже действует другой пропуск':`Одобрить · ${cost.toLocaleString('ru-RU')} ₽`;}
+    for(const [kind,def]of Object.entries(ArchiveModel.BOOSTS)){const button=$('boost-'+kind),state=s.boosts[kind],cost=s.boostCost(kind);button.querySelector('small').textContent=`До ${Math.round((state.left>0?state.unit:ITEMS[s.levels.tier].value*s.nightPay)*4).toLocaleString('ru-RU')} жет. доплаты за предмет · ${kind==='espresso'?'2':'15'} мин`;button.disabled=paused||state.cooldown>0||s.boostMultiplier>1||s.cash<cost;button.querySelector('span').textContent=state.left>0?`Действует · ${format(state.left)}`:state.cooldown>0?`Снова через ${format(state.cooldown)}`:s.boostMultiplier>1?'Уже действует другой пропуск':`Одобрить · ${cost.toLocaleString('ru-RU')} жет.`;}
     $('close-case').disabled=!s.caseReady||s.ended;$('close-case').textContent=s.caseReady?'Сдать наряд':'Выполнить наряд';
     $('bin-label').textContent = `${Number(s.fill.toFixed(1))} / ${s.capacity}`; canvas.classList.toggle('bin-full', s.full);
     const state = s.jammed ? '● ТЕРМОЗАЩИТА' : s.full ? s.levels.bagger?'● СМЕНА МЕШКА':'● КОРЗИНА ПОЛНА' : s.lastPressure > 0 ? `● РЕЗКА · ×${String(s.multiplier).replace('.', ',')}` : '● МАШИНА ГОТОВА';
@@ -290,15 +290,15 @@
       const kind = button.dataset.kind, cost = s.cost(kind), level = s.levels[kind];
       const locked=s.lockReason(kind);button.disabled=!!locked||s.cash<cost||!Number.isFinite(cost);
       button.dataset.state=!Number.isFinite(cost)?'max':locked?'locked':s.cash>=cost?'available':'short';
-      button.querySelector('.price').textContent = locked?'Позже':Number.isFinite(cost) ? `${cost.toLocaleString('ru-RU')} ₽` : 'Выдано';
+      button.querySelector('.price').textContent = locked?'Позже':Number.isFinite(cost) ? `${cost.toLocaleString('ru-RU')} жет.` : 'Выдано';
       button.querySelector('.price').dataset.action=button.disabled?'':kind==='tier'?'Получить':'Установить';
-      button.querySelector('.order-state').textContent=locked?'Откроется позже':!Number.isFinite(cost)?'Установлено':s.cash>=cost?'Можно заказать':`Ещё ${Math.ceil(cost-s.cash).toLocaleString('ru-RU')} ₽`;
-      button.title = locked|| (Number.isFinite(cost)&&s.cash<cost?`Не хватает ${Math.ceil(cost-s.cash).toLocaleString('ru-RU')} ₽`:'');
+      button.querySelector('.order-state').textContent=locked?'Откроется позже':!Number.isFinite(cost)?'Установлено':s.cash>=cost?'Можно заказать':`Ещё ${Math.ceil(cost-s.cash).toLocaleString('ru-RU')} жет.`;
+      button.title = locked|| (Number.isFinite(cost)&&s.cash<cost?`Не хватает ${Math.ceil(cost-s.cash).toLocaleString('ru-RU')} жет.`:'');
       button.querySelector('small').textContent=locked||orderBenefits[kind]||UPGRADES[kind].desc;
-      if (kind === 'tier') button.querySelector('small').textContent = level < ITEMS.length-1 ? `${ITEMS[level + 1].name} · ${ITEMS[level + 1].value.toLocaleString('ru-RU')} ₽ за предмет` : 'Все дела открыты';
+      if (kind === 'tier') button.querySelector('small').textContent = level < ITEMS.length-1 ? `${ITEMS[level + 1].name} · ${ITEMS[level + 1].value.toLocaleString('ru-RU')} жет. за предмет` : 'Все дела открыты';
       const levelBar = button.querySelector('.level');
       if (levelBar.dataset.value !== String(level)) { levelBar.textContent = UPGRADES[kind].max===1 ? '' : `${level} / ${UPGRADES[kind].max}`;levelBar.setAttribute('aria-label',`Уровень ${level} из ${UPGRADES[kind].max}`); levelBar.dataset.value = level; }
-      button.setAttribute('aria-label', `${button.querySelector('b').textContent}. Уровень ${level} из ${UPGRADES[kind].max}. ${Number.isFinite(cost) ? `Цена ${cost} рублей.` : 'Максимальный уровень.'}`);
+      button.setAttribute('aria-label', `${button.querySelector('b').textContent}. Уровень ${level} из ${UPGRADES[kind].max}. ${Number.isFinite(cost) ? `Цена: ${cost} жет.` : 'Максимальный уровень.'}`);
     });
     ui.update(s);
   }
@@ -400,7 +400,7 @@
   }
   document.querySelectorAll('[data-daily-ad]').forEach(button=>button.addEventListener('click',()=>{
     const date=localDate(),id=button.dataset.dailyAd,amount=model.dailyReward(id)*2;
-    void rewarded(()=>model.claimDaily(date,id,{rewarded:true}),`Задание принято: +${amount.toLocaleString('ru-RU')} ₽`);
+    void rewarded(()=>model.claimDaily(date,id,{rewarded:true}),`Задание принято: +${amount.toLocaleString('ru-RU')} жет.`);
   }));
   $('ad-espresso').addEventListener('click',()=>{void rewarded(()=>model.activateBoost('espresso',{rewarded:true}),'Эспрессо получен: доплата на 2 минуты.');});
   art.loaded.then(() => { document.body.classList.add('art-ready'); });
@@ -417,10 +417,10 @@
     release(); model.lastPressure = 0; persist(); modalMode = 'end';
     const win = model.won;
     if(model.night===10&&model.campaignComplete){
-      openModal('ИТОГОВАЯ ПРОВЕРКА','Архив принят.',`Десять ночных нарядов закрыты. Всего списано: ${model.total.toLocaleString('ru-RU')}. Вся опись открыта, премия ${model.premium.toLocaleString('ru-RU')} ₽ зачислена. Можно продолжить дополнительные смены — оборудование и деньги остаются.`,'ПРОДОЛЖИТЬ РАБОТУ');
+      openModal('ИТОГОВАЯ ПРОВЕРКА','Архив принят.',`Десять ночных нарядов закрыты. Всего списано: ${model.total.toLocaleString('ru-RU')}. Вся опись открыта, премия ${model.premium.toLocaleString('ru-RU')} жет. зачислена. Можно продолжить дополнительные смены — оборудование и жетоны остаются.`,'ПРОДОЛЖИТЬ РАБОТУ');
       $('modal-details').innerHTML='<div class="archive-certificate"><span>БЮРО БУМАЖНЫХ ДЕЛ</span><b>СЛЕДОВ НЕ ОСТАЛОСЬ</b><small>Десять нарядов · проверка пройдена</small></div>';return;
     }
-    openModal(win ? 'ПРОВЕРКА ПРОЙДЕНА' : 'ПРОВЕРКА НАЧАЛАСЬ', win ? 'Чисто сработано.' : 'В архиве ещё следы.', win ? `Дело закрыто. Премия: ${model.premium.toLocaleString('ru-RU')} ₽. Следующая ночь: новый наряд и тариф +15%. Деньги и оборудование остаются.` : `Уничтожено ${model.count} из ${model.target} предметов. Деньги и улучшения остаются — попробуй ещё раз.`, win ? 'СЛЕДУЮЩАЯ СМЕНА →' : 'ПОВТОРИТЬ СМЕНУ');
+    openModal(win ? 'ПРОВЕРКА ПРОЙДЕНА' : 'ПРОВЕРКА НАЧАЛАСЬ', win ? 'Чисто сработано.' : 'В архиве ещё следы.', win ? `Дело закрыто. Премия: ${model.premium.toLocaleString('ru-RU')} жет. Следующая ночь: новый наряд и тариф +15%. Жетоны и оборудование остаются.` : `Уничтожено ${model.count} из ${model.target} предметов. Жетоны и улучшения остаются — попробуй ещё раз.`, win ? 'СЛЕДУЮЩАЯ СМЕНА →' : 'ПОВТОРИТЬ СМЕНУ');
   }
   function frame(time) {
     const interval=time-last,dt = Math.min(interval / 1000, .05); last = time; now += dt;
@@ -439,11 +439,11 @@
       if (model.lastPressure && (!paper||model.levels.cross)) { bitTime += dt * (paper?23:11+pressure*14); if (bitTime >= 1) { spawnBits(Math.floor(bitTime)); bitTime %= 1; } }
       for (const event of events) {
         art.onEvent(event,model);
-        if (event === 'shredded') { if(model.total===1)toast('Первая оплата в кассе. Следующее дело отмечено под столом.',6); if(!['paper','folder'].includes(model.recentItem.material)||model.levels.cross)spawnBits(13, true); rewards.push({ text: `+${model.recentReward} ₽`, life: 1.6 }); crunch(!['paper','folder'].includes(model.recentItem.material)); persist(); }
+        if (event === 'shredded') { if(model.total===1)toast('Первая оплата в кассе. Следующее дело отмечено под столом.',6); if(!['paper','folder'].includes(model.recentItem.material)||model.levels.cross)spawnBits(13, true); rewards.push({ text: `+${model.recentReward} жет.`, life: 1.6 }); crunch(!['paper','folder'].includes(model.recentItem.material)); persist(); }
         if (event === 'overheat') { shake = reduced ? 0 : 5; toast(`Отпусти предмет. Мотор должен остыть до ${model.restartHeat}°.`,8,{key:'heat',title:'Мотор перегрелся',priority:4}); beep(130, .4); }
         if (event === 'cooled'){notices.clear('heat');toast('Мотор остыл. Возьми предмет и продолжай.',5,{key:'cooled',title:'Снова в работе',priority:2});beep(620,.07);}
         if(event==='full')toast(model.levels.bagger?'Автомат меняет мешок.':'Нажми на корзину, чтобы сменить мешок.',8,{key:'full',title:'Мешок заполнен',priority:4});
-        if (event === 'auto-empty') { notices.clear('full');particles = []; toast(`Автосмена мешка · переработка +${model.recycleReward.toLocaleString('ru-RU')} ₽`); persist(); }
+        if (event === 'auto-empty') { notices.clear('full');particles = []; toast(`Автосмена мешка · переработка +${model.recycleReward.toLocaleString('ru-RU')} жет.`); persist(); }
         if (event === 'urgent-complete') toast('Предмет списан вовремя. Бонус +50% зачислен.',6,{title:'Срочное выполнено',priority:2});
         if (event === 'urgent-missed') toast('Предмет остаётся в работе, но оплата уже обычная.',6,{title:'Срочность истекла',priority:2});
         if (event === 'plane') toast('Нажми на летящий самолётик: деньги и охлаждение мотора.',8,{key:'plane',title:'Авиапочта!',priority:3});
@@ -478,10 +478,10 @@
     if(inputEventAt){canvas.dataset.inputDrawMs=Math.max(0,performance.now()-inputEventAt).toFixed(1);inputEventAt=0;}
     if(started&&!paused&&!adBusy&&!ui.suspended&&!document.hidden&&interval>0&&interval<150){frameIntervals.push(interval);if(frameIntervals.length>120)frameIntervals.shift();metricTime+=dt;if(metricTime>.5){const sample=[...frameIntervals].sort((a,b)=>a-b);canvas.dataset.frameMedianMs=sample[Math.floor(sample.length*.5)].toFixed(1);canvas.dataset.frameP95Ms=sample[Math.floor(sample.length*.95)].toFixed(1);metricTime=0;}}
   }
-  if (offline.items) toast(`Пока тебя не было, стажёр списал ${offline.items} предметов: +${offline.cash.toLocaleString('ru-RU')} ₽`, 12);
+  if (offline.items) toast(`Пока тебя не было, стажёр списал ${offline.items} предметов: +${offline.cash.toLocaleString('ru-RU')} жет.`, 12);
   persist(); updateUI(); resize();updateNotice(0);
   if (model.ended) endShift();
-  else if (model.started) { setPause(true); $('modal-text').textContent = `Смена восстановлена: уничтожено ${model.count} предметов.${offline.items ? ` Стажёр заработал ${offline.cash.toLocaleString('ru-RU')} ₽.` : ''}${model.levels.intern?' Стажёр уже нанят в сохранённой смене; его табель находится под столом.':''} Продолжи, когда будешь готов.`; }
+  else if (model.started) { setPause(true); $('modal-text').textContent = `Смена восстановлена: уничтожено ${model.count} предметов.${offline.items ? ` Стажёр заработал ${offline.cash.toLocaleString('ru-RU')} жет.` : ''}${model.levels.intern?' Стажёр уже нанят в сохранённой смене; его табель находится под столом.':''} Продолжи, когда будешь готов.`; }
   await art.loaded;
   $('boot-screen').hidden=true;booted=true;document.querySelector('.shell').inert=paused||model.ended;
   if(saveConflict)showSaveConflict();

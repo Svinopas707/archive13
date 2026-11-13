@@ -53,7 +53,7 @@
     }
     onPurchase(kind){const row=document.querySelector(`[data-kind="${kind}"]`);row?.classList.add('approved');setTimeout(()=>row?.classList.remove('approved'),650);}
     update(m){
-      document.getElementById('journal-funds').textContent=`${Math.floor(m.cash).toLocaleString('ru-RU')} ₽`;
+      document.getElementById('journal-funds').textContent=`${Math.floor(m.cash).toLocaleString('ru-RU')} жет.`;
       
       if(this.tab!=='award')return;
       const key=`${m.total}:${m.awards.size}:${m.stats.calls}:${m.stats.bins}:${m.stats.planes}`;
