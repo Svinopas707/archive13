@@ -446,7 +446,7 @@
         if (event === 'auto-empty') { notices.clear('full');particles = []; toast(`Автосмена мешка · переработка +${model.recycleReward.toLocaleString('ru-RU')} жет.`); persist(); }
         if (event === 'urgent-complete') toast('Предмет списан вовремя. Бонус +50% зачислен.',6,{title:'Срочное выполнено',priority:2});
         if (event === 'urgent-missed') toast('Предмет остаётся в работе, но оплата уже обычная.',6,{title:'Срочность истекла',priority:2});
-        if (event === 'plane') toast('Нажми на летящий самолётик: деньги и охлаждение мотора.',8,{key:'plane',title:'Авиапочта!',priority:3});
+        if (event === 'plane') toast('Нажми на летящий самолётик: жетоны и охлаждение мотора.',8,{key:'plane',title:'Авиапочта!',priority:3});
         if (event === 'win' || event === 'timeout') {
           endShift();
         }
